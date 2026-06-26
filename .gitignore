@@ -1,4 +1,6 @@
 node_modules/
 download.ps1
+download2.ps1
+check.ps1
 .git/
 .vercel/
