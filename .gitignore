@@ -1,0 +1,4 @@
+node_modules/
+download.ps1
+.git/
+.vercel/
