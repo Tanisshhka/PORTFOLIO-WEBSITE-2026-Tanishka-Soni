@@ -1,7 +1,6 @@
 const nodemailer = require('nodemailer');
 
 module.exports = async function handler(req, res) {
-    // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -41,13 +40,9 @@ module.exports = async function handler(req, res) {
                 <div style="padding:30px;">
                     <p style="font-size:14px;color:#666;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">From</p>
                     <p style="font-size:16px;background:#f8f9ff;padding:12px;border-radius:8px;border-left:3px solid #7c3aed;">${name}</p>
-                    
                     <p style="font-size:14px;color:#666;margin-bottom:8px;margin-top:20px;text-transform:uppercase;letter-spacing:1px;">Email</p>
                     <p style="font-size:16px;background:#f8f9ff;padding:12px;border-radius:8px;border-left:3px solid #7c3aed;">${email}</p>
-                    
-                    ${subject ? `<p style="font-size:14px;color:#666;margin-bottom:8px;margin-top:20px;text-transform:uppercase;letter-spacing:1px;">Subject</p>
-                    <p style="font-size:16px;background:#f8f9ff;padding:12px;border-radius:8px;border-left:3px solid #7c3aed;">${subject}</p>` : ''}
-                    
+                    ${subject ? `<p style="font-size:14px;color:#666;margin-bottom:8px;margin-top:20px;text-transform:uppercase;letter-spacing:1px;">Subject</p><p style="font-size:16px;background:#f8f9ff;padding:12px;border-radius:8px;border-left:3px solid #7c3aed;">${subject}</p>` : ''}
                     <p style="font-size:14px;color:#666;margin-bottom:8px;margin-top:20px;text-transform:uppercase;letter-spacing:1px;">Message</p>
                     <div style="background:#f8f9ff;padding:20px;border-radius:8px;border:1px solid #e5e7eb;">${message.replace(/\n/g, '<br>')}</div>
                 </div>
