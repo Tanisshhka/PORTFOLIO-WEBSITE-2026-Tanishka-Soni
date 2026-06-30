@@ -4,3 +4,5 @@ download2.ps1
 check.ps1
 .git/
 .vercel/
+
+.vercel
