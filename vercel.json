@@ -1,16 +1,14 @@
 {
   "version": 2,
   "public": true,
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" }
+  "outputDirectory": ".",
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
   ],
   "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
-      ]
-    },
     {
       "source": "/styles.css",
       "headers": [
@@ -22,6 +20,15 @@
       "headers": [
         { "key": "Content-Type", "value": "application/javascript; charset=utf-8" }
       ]
+    },
+    {
+      "source": "/assests/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
     }
+  ],
+  "rewrites": [
+    { "source": "/api/send-message", "destination": "/api/send-message.js" }
   ]
 }

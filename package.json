@@ -2,7 +2,6 @@
   "name": "tanishka-portfolio",
   "version": "1.0.0",
   "description": "Tanishka Soni Portfolio with Nodemailer contact form",
-  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
