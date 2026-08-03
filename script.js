@@ -346,10 +346,12 @@
             e.preventDefault();
 
             const formData = {
+                access_key: 'f5759e48-c166-48da-9c81-08321cbb4fa4',
                 name: form.querySelector('#name').value.trim(),
                 email: form.querySelector('#email').value.trim(),
                 subject: form.querySelector('#subject').value.trim(),
-                message: form.querySelector('#message').value.trim()
+                message: form.querySelector('#message').value.trim(),
+                from_name: 'Tanishka Soni Portfolio'
             };
 
             const originalHTML = submitBtn.innerHTML;
@@ -359,7 +361,7 @@
             statusDiv.className = 'form-status';
 
             try {
-                const response = await fetch('/api/send-message', {
+                const response = await fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
@@ -368,7 +370,7 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    statusDiv.textContent = '✓ Message sent successfully! Check your email for confirmation.';
+                    statusDiv.textContent = '✓ Message sent successfully!';
                     statusDiv.className = 'form-status success';
                     submitBtn.innerHTML = '<i class="fas fa-check"></i> Sent!';
                     submitBtn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
@@ -382,7 +384,7 @@
                         statusDiv.className = 'form-status';
                     }, 3000);
                 } else {
-                    throw new Error(result.error || 'Failed to send message');
+                    throw new Error(result.message || 'Failed to send message');
                 }
             } catch (error) {
                 statusDiv.textContent = '✕ ' + error.message;
