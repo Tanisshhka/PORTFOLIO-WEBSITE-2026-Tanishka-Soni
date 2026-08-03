@@ -13,17 +13,27 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { name, email, subject, message } = req.body;
+    let body = req.body;
+    if (typeof body === 'string') {
+        try { body = JSON.parse(body); } catch (e) {
+            return res.status(400).json({ error: 'Invalid JSON body.' });
+        }
+    }
+
+    const { name, email, subject, message } = body || {};
 
     if (!name || !email || !message) {
         return res.status(400).json({ error: 'Name, email and message are required.' });
     }
 
+    const gmailUser = process.env.GMAIL_USER || 'thstanu13@gmail.com';
+    const gmailPass = process.env.GMAIL_PASS || 'fpre ozvv cdqv hwqo';
+
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'thstanu13@gmail.com',
-            pass: 'vitfbqagvnqabwgm'
+            user: gmailUser,
+            pass: gmailPass
         }
     });
 
@@ -77,7 +87,7 @@ module.exports = async function handler(req, res) {
         await transporter.sendMail(autoReply);
         return res.status(200).json({ success: true, message: 'Message sent successfully!' });
     } catch (error) {
-        console.error('Email error:', error);
-        return res.status(500).json({ success: false, error: 'Failed to send message.' });
+        console.error('Email send error:', error.message || error);
+        return res.status(500).json({ success: false, error: 'Failed to send message. ' + (error.message || 'Unknown error') });
     }
 };

@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
 // Contact form endpoint
-app.post('/send-message', async (req, res) => {
+app.post('/api/send-message', async (req, res) => {
     const { name, email, subject, message } = req.body;
 
     if (!name || !email || !message) {
@@ -30,7 +30,7 @@ app.post('/send-message', async (req, res) => {
         service: 'gmail',
         auth: {
             user: 'thstanu13@gmail.com',
-            pass: 'vitfbqagvnqabwgm'
+            pass: 'fpre ozvv cdqv hwqo'
         }
     });
 
