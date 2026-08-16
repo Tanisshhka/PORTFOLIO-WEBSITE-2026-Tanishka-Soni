@@ -251,7 +251,7 @@
             { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
         );
 
-        $$('.reveal-up, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+        $$('.reveal-up, .reveal-left, .reveal-right, .pop-in, .bounce-in, .slide-up-fade').forEach(el => observer.observe(el));
     }
 
     /* ---------- Skill Bars ---------- */
@@ -337,68 +337,7 @@
 
     /* ---------- Contact Form ---------- */
     function initContactForm() {
-        const form = document.getElementById('contact-form');
-        const submitBtn = document.getElementById('submit-btn');
-        const statusDiv = document.getElementById('form-status');
-        if (!form) return;
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const formData = {
-                access_key: 'f5759e48-c166-48da-9c81-08321cbb4fa4',
-                name: form.querySelector('#name').value.trim(),
-                email: form.querySelector('#email').value.trim(),
-                subject: form.querySelector('#subject').value.trim(),
-                message: form.querySelector('#message').value.trim(),
-                from_name: 'Tanishka Soni Portfolio'
-            };
-
-            const originalHTML = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            submitBtn.disabled = true;
-            statusDiv.textContent = '';
-            statusDiv.className = 'form-status';
-
-            try {
-                const response = await fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    statusDiv.textContent = '✓ Message sent successfully!';
-                    statusDiv.className = 'form-status success';
-                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Sent!';
-                    submitBtn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
-                    form.reset();
-
-                    setTimeout(() => {
-                        submitBtn.innerHTML = originalHTML;
-                        submitBtn.style.background = '';
-                        submitBtn.disabled = false;
-                        statusDiv.textContent = '';
-                        statusDiv.className = 'form-status';
-                    }, 3000);
-                } else {
-                    throw new Error(result.message || 'Failed to send message');
-                }
-            } catch (error) {
-                statusDiv.textContent = '✕ ' + error.message;
-                statusDiv.className = 'form-status error';
-                submitBtn.innerHTML = originalHTML;
-                submitBtn.disabled = false;
-                submitBtn.style.background = '';
-
-                setTimeout(() => {
-                    statusDiv.textContent = '';
-                    statusDiv.className = 'form-status';
-                }, 5000);
-            }
-        });
+        // Contact section now uses direct links - no form needed
     }
 
     /* ---------- Smooth Scroll for Anchor Links ---------- */
@@ -453,9 +392,77 @@
         });
     }
 
+    /* ---------- Tilt Card Effect ---------- */
+    function initTiltCards() {
+        if (window.matchMedia('(pointer: fine)').matches) {
+            $$('.tilt-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width;
+                    const y = (e.clientY - rect.top) / rect.height;
+                    const tiltX = (y - 0.5) * 8;
+                    const tiltY = (x - 0.5) * -8;
+                    card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-6px)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                });
+            });
+        }
+    }
+
+    /* ---------- Contact Card Ripple ---------- */
+    function initContactRipple() {
+        $$('.contact-big-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.style.cssText = `
+                    position: absolute; border-radius: 50%; background: rgba(124,58,237,0.3);
+                    width: 100px; height: 100px; transform: translate(-50%, -50%) scale(0);
+                    animation: rippleEffect 0.6s ease-out; pointer-events: none;
+                `;
+                const rect = this.getBoundingClientRect();
+                ripple.style.left = (e.clientX - rect.left) + 'px';
+                ripple.style.top = (e.clientY - rect.top) + 'px';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add ripple keyframe if not exists
+        if (!document.getElementById('ripple-style')) {
+            const style = document.createElement('style');
+            style.id = 'ripple-style';
+            style.textContent = `
+                @keyframes rippleEffect {
+                    to { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    /* ---------- Parallax Tilt on Hero ---------- */
+    function initHeroTilt() {
+        const hero = document.getElementById('hero');
+        if (!hero || !window.matchMedia('(pointer: fine)').matches) return;
+
+        hero.addEventListener('mousemove', (e) => {
+            const rect = hero.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            const badges = hero.querySelectorAll('.floating-badge');
+            badges.forEach((badge, i) => {
+                const depth = (i + 1) * 8;
+                badge.style.transform = `translate(${x * depth}px, ${y * depth}px)`;
+            });
+        });
+    }
+
     /* ---------- Section Reveal Stagger ---------- */
     function initStaggerReveal() {
-        $$('.about-grid .about-card, .skills-grid .skill-category, .projects-grid .project-card, .achievements-grid .achievement-card, .hire-grid .hire-card, .certificates-masonry .certificate-card, .gallery-grid .gallery-item').forEach((card, i) => {
+        $$('.about-grid .about-card, .skills-grid .skill-category, .projects-grid .project-card, .achievements-grid .achievement-card, .hire-grid .hire-card, .certificates-masonry .certificate-card, .gallery-grid .gallery-item, .contact-cards-grid .contact-big-card').forEach((card, i) => {
             card.style.transitionDelay = (i % 4) * 0.1 + 's';
         });
     }
@@ -471,6 +478,9 @@
         initBadgeAnimations();
         initMagneticButtons();
         initStaggerReveal();
+        initTiltCards();
+        initContactRipple();
+        initHeroTilt();
 
         // Initial counters for about section
         setTimeout(() => {
